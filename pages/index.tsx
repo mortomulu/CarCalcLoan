@@ -1,5 +1,7 @@
 import Image from "next/image";
 import localFont from "next/font/local";
+import { Carousel } from "antd/lib";
+import { useState } from "react";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -12,104 +14,154 @@ const geistMono = localFont({
   weight: "100 900",
 });
 
+function Navbar() {
+  return (
+    <nav className="w-full bg-gray-900 text-white p-4 flex justify-between items-center shadow-md">
+      <div className="flex items-center gap-4">
+        <Image src="/icon.svg" alt="Logo" width={40} height={40} />
+        <h1 className="text-xl font-bold">CarLoanCalc</h1>
+      </div>
+      <ul className="flex gap-6">
+        <li><a href="#home" className="hover:text-gray-300">Home</a></li>
+        <li><a href="#features" className="hover:text-gray-300">Features</a></li>
+        <li><a href="#contact" className="hover:text-gray-300">Contact</a></li>
+      </ul>
+    </nav>
+  );
+}
+
 export default function Home() {
+  const [hargaMobil, setHargaMobil] = useState<number>(0);
+  const [hasilHargaMobil, setHasilHargaMobil] = useState<number>(0);
+  const [dp, setDp] = useState<number>(0);
+  const [hasilDp, setHasilDp] = useState<number>(0);
+  const [tenor, setTenor] = useState<number>(0);
+  const [hasilTenor, setHasilTenor] = useState<number>(0);
+  const [bunga, setBunga] = useState<number>(20);
+  const [jumlahAngsuran, setJumlahAngsuran] = useState<number>(0);
+
+  const hitungJumlahAngsuran = () => {
+    const bungaNominal = (hargaMobil * bunga) / 100;
+    const hargaTotal = hargaMobil + bungaNominal;
+    const dpNominal = (hargaMobil * dp) / 100;
+    const tenorBulan = tenor * 12;
+
+    const angsuranPerBulan = (hargaTotal - dpNominal) / tenorBulan;
+    setJumlahAngsuran(angsuranPerBulan);
+    setHasilHargaMobil(hargaMobil);
+    setHasilDp(dp);
+    setHasilTenor(tenor);
+  };
+
   return (
     <div
-      className={`${geistSans.variable} ${geistMono.variable} grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]`}
+      className={`${geistSans.variable} ${geistMono.variable} flex flex-col items-center min-h-screen`}
     >
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              pages/index.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+      <Navbar /> 
+      <main className="flex flex-col gap-8 w-full max-w-md sm:max-w-lg lg:max-w-xl items-center sm:items-start mt-10">
+        <div className="font-[family-name:var(--font-geist-mono)] flex gap-4 sm:gap-10 items-center">
+          <Image
+            src="/icon.svg"
+            alt="Next.js logo"
+            width={50}
+            height={50}
+            priority
+          />
+          <h1 className="text-2xl sm:text-3xl font-bold">CarLoanCalc</h1>
         </div>
+        <div className="w-full">
+          <Carousel autoplay>
+            <div>
+              <img src="./banner/banner-wellcome.svg" alt="Welcome Banner" />
+            </div>
+            <div>
+              <img
+                src="./banner/fitur-komparasi.svg"
+                alt="Comparison Feature"
+              />
+            </div>
+            <div>
+              <img
+                src="./banner/fitur-konsultasi.svg"
+                alt="Consultation Feature"
+              />
+            </div>
+          </Carousel>
+        </div>
+        <ol className="flex flex-col sm:flex-row justify-center w-full list-inside list-decimal text-sm text-left sm:text-left font-[family-name:var(--font-geist-mono)] gap-4">
+          <div className="w-full grid grid-cols-1 gap-4">
+            <div className="flex flex-col sm:flex-row gap-4">
+              <span>Harga mobil</span>
+              <input
+                type="text"
+                className="text-black px-2 w-full sm:w-auto"
+                value={hargaMobil}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setHargaMobil(Number(e.target.value) || 0)
+                }
+              />
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4 sm:gap-[90px]">
+              <span>DP</span>
+              <div className="flex gap-2 items-center">
+                <input
+                  type="text"
+                  className="text-black px-2 w-full sm:w-auto"
+                  value={dp}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setDp(Number(e.target.value) || 0)
+                  }
+                />
+                %
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4 sm:gap-16">
+              <span>Tenor</span>
+              <div className="flex gap-2 items-center">
+                <input
+                  type="text"
+                  className="text-black px-2 w-full sm:w-auto"
+                  value={tenor}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setTenor(Number(e.target.value) || 0)
+                  }
+                />
+                Tahun
+              </div>
+            </div>
+          </div>
+        </ol>
+        <div className="flex gap-4 items-center justify-end w-full">
+          <button
+            onClick={hitungJumlahAngsuran}
+            className="border font-semibold border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base py-4 sm:py-1 px-4 sm:px-5"
+          >
+            Hitung
+          </button>
+        </div>
+
+        {jumlahAngsuran > 0 && (
+          <div className="text-start mt-4 w-full grid grid-cols-1 sm:grid-cols-2 font-[family-name:var(--font-geist-mono)] border-y border-white py-10 gap-6">
+            <p>Harga Mobil</p>
+            <p>Rp. {hasilHargaMobil.toLocaleString()}</p>
+            <p>DP</p>
+            <p>
+              {hasilDp}% (Rp.{" "}
+              {((hasilHargaMobil * hasilDp) / 100).toLocaleString()})
+            </p>
+            <p>Bunga</p>
+            <p>{bunga}%</p>
+            <p>Tenor</p>
+            <p>{hasilTenor} tahun ({hasilTenor * 12} bulan)</p>
+            <p className="mt-4 font-semibold">Jumlah Angsuran</p>
+            <p className="mt-4 font-semibold">
+              Rp. {jumlahAngsuran.toLocaleString()}
+            </p>
+          </div>
+        )}
       </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
     </div>
   );
 }
